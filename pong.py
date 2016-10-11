@@ -1,10 +1,7 @@
 import pygame
 
 def main():
-    
-    black = 0, 0, 0
-    white = 255, 255, 255
-    surface = create_window()
+    surface, size = create_window()
     
     
 def create_window():
@@ -12,13 +9,18 @@ def create_window():
     size = (600, 500)
     surface = pygame.display.set_mode(size)
     pygame.display.set_caption('Ping Pong')
-    return surface
+    return surface, size
 
-def start_match():
-    class Player:
-        width = 15
-        height = 100
-        color = 0,0,0
+#def start_match():
+    
+
+class Player:
+    def __init__(self, x_coor, y_coor):
+        self.x_coor = x_coor
+        self.y_coor = y_coor
+        self.width = 15
+        self.height = 100
+        self.color = 0,0,0
     
         
 
