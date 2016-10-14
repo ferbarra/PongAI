@@ -47,10 +47,12 @@ class Player:
 class Game:
     def __init__(self, surface):
         self.surface = surface
+        self.surface_size = surface.get_size()
         self.bg_color = pygame.Color('black')
         self.fg_color = pygame.Color('white')
-        self.ball = Ball([200, 200], 20, self.fg_color, self.surface)
-        self.player_1 = Player([10,200], 20, 100, self.fg_color, self.surface)
+        self.ball = Ball([200, 200], 20, self.fg_color, surface)
+        self.player_1 = Player([10,200], 20, 100, self.fg_color, surface)
+        self.player_2 = Player([self.surface_size[0] - 30, 200], 20, 100, self.fg_color, surface)
         self.close_clicked = False      
         
     def play(self):
@@ -74,16 +76,7 @@ class Game:
         self.surface.fill(self.bg_color)
         self.ball.draw()
         self.player_1.draw()
-        # Get screen size
-        """
-        surface_size = self.surface.get_size()
-        surface_width = surface_size[0]
-        surface_height = surface_size[1]
-        player_width = 20
-        player_height = 100
-        pygame.draw.rect(self.surface, pygame.Color('white'), (10,200,player_width, player_height))
-        pygame.draw.rect(self.surface, pygame.Color('white'), (surface_width - (player_width + 10),200,player_width, player_height))
-        """        
+        self.player_2.draw()
         pygame.display.update()    
         
 
