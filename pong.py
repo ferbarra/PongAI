@@ -50,7 +50,7 @@ class Game:
     
     def handle_event(self):
         event = pygame.event.poll()
-        if event.type == QUIT:
+        if event.type == 'QUIT':
             self.close_clicked = True 
             
     def update(self):
