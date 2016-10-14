@@ -45,6 +45,8 @@ class Game:
         self.draw()
         while not self.close_clicked:
             self.handle_event()
+            # wait some time so game doesn't go insanely fast
+            time.sleep(0.005)
             self.update()
             self.draw()
     
