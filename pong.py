@@ -17,20 +17,28 @@ def create_window():
 # User-definded classes:
 
 class Ball:
-    def __init__(self, center, radius, color, surface):
+    def __init__(self, center, radius, speed, color, surface):
         self.center = center
         self.radius = radius
+        self.speed = speed
         self.color = color
         self.surface = surface
+        self.surface_size = surface.get_size()
     
     def draw(self):
         # Draw circle
         pygame.draw.circle(self.surface, self.color, self.center, self.radius)
         
     def move(self):
-        surface_size = self.surface.get_size()
+        self.bounce()
         for index in range(0, 2):
-            self.center[index] = (self.center[index] + 1) % surface_size[index]  
+            self.center[index] = self.center[index] + self.speed[index]
+    
+    def bounce(self):
+        for x in range(0,2):
+            if (self.center[x] + self.radius >= self.surface_size[x] or self.center[x] - self.radius <= 0):
+                #self.center[x] = self.center[0] * -1
+                self.speed[x] *= -1
             
 class Player:
     def __init__(self, coordinates, width, height, color, surface):
@@ -50,7 +58,7 @@ class Game:
         self.surface_size = surface.get_size()
         self.bg_color = pygame.Color('black')
         self.fg_color = pygame.Color('white')
-        self.ball = Ball([200, 200], 20, self.fg_color, surface)
+        self.ball = Ball([200, 200], 20, [1,1], self.fg_color, surface)
         self.player_1 = Player([10,200], 20, 100, self.fg_color, surface)
         self.player_2 = Player([self.surface_size[0] - 30, 200], 20, 100, self.fg_color, surface)
         self.close_clicked = False      
