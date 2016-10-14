@@ -1,4 +1,4 @@
-import pygame, time
+import pygame, time, uaio
 
 def main():
     surface = create_window()
@@ -24,10 +24,15 @@ class Ball:
         self.color = color
         self.surface = surface
         self.surface_size = surface.get_size()
+        self.score = [0,0]
     
     def draw(self):
         # Draw circle
         pygame.draw.circle(self.surface, self.color, self.center, self.radius)
+        # Draw left score
+        uaio.draw_string(str(self.score[0]), self.surface, (20,10))
+        # Draw right score
+        uaio.draw_string(str(self.score[1]), self.surface, (self.surface_size[0] - 30, 10))
         
     def move(self):
         self.bounce()
