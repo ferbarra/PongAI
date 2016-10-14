@@ -1,7 +1,7 @@
 import pygame, time
 
 def main():
-    surface, size = create_window()
+    surface = create_window()
     game = Game(surface)
     game.play()
     pygame.quit()
@@ -12,7 +12,7 @@ def create_window():
     size = (600, 500)
     surface = pygame.display.set_mode(size)
     pygame.display.set_caption('Ping Pong')
-    return surface, size
+    return surface
 
 # User-definded classes:
 
@@ -61,8 +61,14 @@ class Game:
     def draw(self):
         self.surface.fill(self.bg_color)
         self.ball.draw()
-        pygame.draw.rect(self.surface, pygame.Color('white'), (10,200,20, 100))
-        pygame.draw.rect(self.surface, pygame.Color('white'), (490,200,20, 100))
+        # Get screen size
+        surface_size = self.surface.get_size()
+        surface_width = surface_size[0]
+        surface_height = surface_size[1]
+        player_width = 20
+        player_height = 100
+        pygame.draw.rect(self.surface, pygame.Color('white'), (10,200,player_width, player_height))
+        pygame.draw.rect(self.surface, pygame.Color('white'), (surface_width - (player_width + 10),200,player_width, player_height))
         pygame.display.update()    
 
 main()
