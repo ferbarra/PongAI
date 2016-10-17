@@ -40,10 +40,21 @@ class Ball:
             self.center[index] = self.center[index] + self.speed[index]
     
     def bounce(self):
-        for x in range(0,2):
-            if (self.center[x] + self.radius >= self.surface_size[x] or self.center[x] - self.radius <= 0):
-                #self.center[x] = self.center[0] * -1
-                self.speed[x] *= -1
+        # if ball touches left side of the screen
+        if (self.center[0] + self.radius >= self.surface_size[0]):
+            # return ball to the center of the screen.
+            self.center = [self.surface_size[0]/2,self.surface_size[1]/2]
+            # increase score in favor of left player
+            self.score[0] += 1
+        # if the ball touches the right side of the screen.
+        elif (self.center[0] - self.radius <= 0):
+            # return ball to the center of the screen.
+            self.center = [self.surface_size[0]/2,self.surface_size[1]/2]
+            self.score[1] +=1
+        # if the ball touches the up or down side of the screen
+        if (self.center[1] + self.radius >= self.surface_size[1] or self.center[1] - self.radius <= 0):
+            #self.center[x] = self.center[0] * -1
+            self.speed[1] *= -1           
             
 class Player:
     def __init__(self, coordinates, width, height, color, surface):
