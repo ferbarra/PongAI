@@ -18,7 +18,8 @@ def draw_string(string, surface, location=(0, 0), font_size=24, fg_color=pygame.
     font = pygame.font.SysFont(None, font_size, True)
     text_image = font.render(string, True, fg_color, bg_color)
     surface.blit(text_image, location)
-    pygame.display.update()
+    # Not needed in Pong, screen already updates.
+    # pygame.display.update()
 
 def input_string(prompt, surface, location=(0, 0), font_size=24, fg_color=pygame.Color('white'), bg_color=pygame.Color('black'), ):
     # Draw a prompt string on the window surface. Check keys
