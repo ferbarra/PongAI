@@ -4,6 +4,7 @@ def main():
     surface = create_window()
     game = Game(surface)
     game.play()
+    print('quicefjrsgbrjogrtog')
     pygame.quit()
     
 def create_window():
@@ -94,7 +95,7 @@ class Game:
     
     def handle_event(self):
         event = pygame.event.poll()
-        if event.type == 'QUIT':
+        if event.type == pygame.QUIT:
             self.close_clicked = True 
             
     def update(self):
