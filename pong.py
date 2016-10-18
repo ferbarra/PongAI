@@ -42,28 +42,18 @@ class Ball:
     def bounce(self):
         # if ball touches left side of the screen
         if (self.center[0] + self.radius >= self.surface_size[0]):
-            # return ball to the center of the screen.
-            # self.return_to_center()
             # change x direction
             self.speed[0] *= -1
             # increase score in favor of left player
             self.score[0] += 1
         # if the ball touches the right side of the screen.
         elif (self.center[0] - self.radius <= 0):
-            # return ball to the center of the screen.
-            #self.return_to_center()
             # change x direction
             self.speed[0] *= -1
             self.score[1] +=1
         # if the ball touches the up or down side of the screen
         if (self.center[1] + self.radius >= self.surface_size[1] or self.center[1] - self.radius <= 0):
-            #self.center[x] = self.center[0] * -1
             self.speed[1] *= -1           
-    
-    """        
-    def return_to_center(self):
-        self.center = [int(self.surface_size[0]/2),int(self.surface_size[1]/2)]
-    """
 
 class Player:
     def __init__(self, coordinates, width, height, color, surface):
@@ -110,8 +100,6 @@ class Game:
     def draw(self):
         self.surface.fill(self.bg_color)
         self.ball.draw()
-        #self.left_player.draw()
-        #self.right_player.draw()
         pygame.draw.rect(self.surface, self.fg_color, self.left_player)
         pygame.draw.rect(self.surface, self.fg_color, self.right_player)
         pygame.display.update()    
