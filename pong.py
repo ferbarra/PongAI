@@ -55,17 +55,6 @@ class Ball:
         if (self.center[1] + self.radius >= self.surface_size[1] or self.center[1] - self.radius <= 0):
             self.speed[1] *= -1           
 
-class Player:
-    def __init__(self, coordinates, width, height, color, surface):
-        self.coordinates = coordinates
-        self.width = width
-        self.height = height
-        self.color = color
-        self.surface = surface
-        
-    def draw(self):
-        # Draw rectangle
-        pygame.draw.rect(self.surface, self.color, (self.coordinates[0],self.coordinates[1], self.width, self.height))
         
 class Game:
     def __init__(self, surface):
