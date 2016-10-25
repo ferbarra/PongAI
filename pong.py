@@ -92,24 +92,25 @@ class Game:
             self.close_clicked = True
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_q:
-                print("q")
                 self.move_player(self.left_player, -10)
-                print(self.left_player.y)
             if event.key == pygame.K_a:
-                print('a')
-                self.left_player.move_ip(0,10)
-                print(self.left_player.y)
+                self.move_player(self.left_player, 10)
             if event.key == pygame.K_p:
-                print('p')
-                print(self.left_player.y + self.left_player.height)
+                self.move_player(self.right_player, -10)
             if event.key == pygame.K_l:
-                print('l')
-                print(self.surface_size[1])
+                self.move_player(self.right_player, 10)
                 
                 
     def move_player(self, player, scalar):
-        if (player.y > 0 and player.y + player.height < 500):
+        if (scalar < 0 and player.top >= scalar):
+            player.move_ip(0,scalar)
+        elif (scalar > 0 and player.top + player.height <= self.surface_size[1] - scalar):
             player.move_ip(0, scalar)
+        """
+        Review this code later:
+        if (player.y > scalar and player.y + player.height < self.surface_size[1]):
+            player.move_ip(0, scalar)
+        """           
             
     def update(self):
         if self.ball.score[0] < 11 and self.ball.score[1] < 11:
