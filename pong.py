@@ -1,5 +1,6 @@
 import pygame, time, uaio
 
+
 def main():
     surface = create_window()
     game = Game(surface)
@@ -14,7 +15,9 @@ def create_window():
     pygame.display.set_caption('Ping Pong')
     return surface
 
+
 # User-definded classes:
+
 
 class Ball:
     def __init__(self, center, radius, speed, color, surface):
@@ -34,12 +37,11 @@ class Ball:
         # Draw right score
         uaio.draw_string(str(self.score[1]), self.surface, (self.surface_size[0] - 30, 10))
         
-    def move(self):
-        self.bounce()
+    def move(self):        
         for index in range(0, 2):
             self.center[index] = self.center[index] + self.speed[index]
     
-    def bounce(self):
+    def wall_collision(self):
         # if ball touches left side of the screen
         if (self.center[0] + self.radius >= self.surface_size[0]):
             # change x direction
@@ -55,36 +57,65 @@ class Ball:
         if (self.center[1] + self.radius >= self.surface_size[1] or self.center[1] - self.radius <= 0):
             self.speed[1] *= -1           
 
-        
+
+    def paddle_collision(self, left_player, right_player):
+        if left_player.collidepoint(self.center) and self.speed[0] < 0:
+            self.speed[0] *= -1
+        if right_player.collidepoint(self.center) and self.speed[0] > 0:
+            self.speed[0] *= -1        
+
+
 class Game:
     def __init__(self, surface):
         self.surface = surface
         self.surface_size = surface.get_size()
         self.bg_color = pygame.Color('black')
         self.fg_color = pygame.Color('white')
-        self.ball = Ball([200, 200], 10, [1,1], self.fg_color, surface)
-        #self.player_1 = Player([10,200], 20, 100, self.fg_color, surface)
-        #self.player_2 = Player([self.surface_size[0] - 30, 200], 20, 100, self.fg_color, surface)
+        self.ball = Ball([int(self.surface_size[0]/2), int(self.surface_size[1]/2)], 10, [1,1], self.fg_color, surface)
         self.left_player = pygame.Rect(30,200, 15, 100)
         self.right_player = pygame.Rect(self.surface_size[0] - 45, 200, 15, 100)
-        self.close_clicked = False 
+        self.close_clicked = False
+        pygame.key.set_repeat(20, 20)
         
     def play(self):
         self.draw()
         while not self.close_clicked:
             self.handle_event()
             # wait some time so game doesn't go insanely fast
-            time.sleep(0.0005)
+            time.sleep(0.00005)
             self.update()
             self.draw()
     
     def handle_event(self):
         event = pygame.event.poll()
         if event.type == pygame.QUIT:
-            self.close_clicked = True 
+            self.close_clicked = True
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_q:
+                print("q")
+                self.move_player(self.left_player, -10)
+                print(self.left_player.y)
+            if event.key == pygame.K_a:
+                print('a')
+                self.left_player.move_ip(0,10)
+                print(self.left_player.y)
+            if event.key == pygame.K_p:
+                print('p')
+                print(self.left_player.y + self.left_player.height)
+            if event.key == pygame.K_l:
+                print('l')
+                print(self.surface_size[1])
+                
+                
+    def move_player(self, player, scalar):
+        if (player.y > 0 and player.y + player.height < 500):
+            player.move_ip(0, scalar)
             
     def update(self):
-        self.ball.move()
+        if self.ball.score[0] < 11 and self.ball.score[1] < 11:
+            self.ball.wall_collision()
+            self.ball.paddle_collision(self.left_player, self.right_player)
+            self.ball.move()
         
     def draw(self):
         self.surface.fill(self.bg_color)
@@ -93,5 +124,6 @@ class Game:
         pygame.draw.rect(self.surface, self.fg_color, self.right_player)
         pygame.display.update()    
         
+
 
 main()
