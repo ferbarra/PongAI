@@ -5,7 +5,7 @@
 import pygame
 from pygame.locals import *
 
-def draw_string(string, surface, location=(0, 0), font_size=24, fg_color=pygame.Color('white'), bg_color=pygame.Color('black')):
+def draw_string(string, surface, location=(0, 0), font_size=24, fg_color=pygame.Color('white'), bg_color=pygame.Color('black'), center=False):
     # Draw a string on the window surface
     # - string is the str object to draw
     # - surface is the window's pygame.Surface object
@@ -15,6 +15,13 @@ def draw_string(string, surface, location=(0, 0), font_size=24, fg_color=pygame.
     # - fg_color is the Pygame.Color used to draw the string
     # - bg_color is the Pygame.Color used for the background
 
+    if center:
+        location = list(location)
+        text_width = get_width(string)
+        middle_of_screen = surface.get_width() / 2
+        location[0] = middle_of_screen - text_width / 2
+        location = tuple(location)
+
     font = pygame.font.SysFont(None, font_size, True)
     text_image = font.render(string, True, fg_color, bg_color)
     surface.blit(text_image, location)
@@ -23,7 +30,7 @@ def draw_string(string, surface, location=(0, 0), font_size=24, fg_color=pygame.
 
     return text_image
 
-def create_button(string, surface, location=[0,0], font_size=24, fg_color=pygame.Color('white'), bg_color=pygame.Color('black'), center=False):
+def create_button(string, surface, location=(0,0), font_size=24, fg_color=pygame.Color('white'), bg_color=pygame.Color('black'), center=False):
     """
     Pygame doesn't provide buttons. Button functionality can be 
     accomplished by creating a surface, writing a string on it,
@@ -34,16 +41,23 @@ def create_button(string, surface, location=[0,0], font_size=24, fg_color=pygame
     """
     
     if center:
+        location = list(location)
         text_width = get_width(string)
         middle_of_screen = surface.get_width() / 2
         location[0] = middle_of_screen - text_width / 2
+        location = tuple(location)
     # button hold the new rect created with the same dimensions as
     # the string.
+    
     button = draw_string(string, surface, location=location).get_rect()
     # The button is moved to the expected positions where clicks can
     # be detected.
-    button.move_ip(location[0], location[1])
+    
+    button.move_ip(location)
     return button
+
+    def center_text():
+        pass
 
 def input_string(prompt, surface, location=(0,0), font_size=24, fg_color=pygame.Color('white'), bg_color=pygame.Color('black'), ):
     # Draw a prompt string on the window surface. Check keys
