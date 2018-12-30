@@ -21,7 +21,31 @@ def draw_string(string, surface, location=(0, 0), font_size=24, fg_color=pygame.
     # Not needed in Pong, screen already updates.
     # pygame.display.update()
 
-def input_string(prompt, surface, location=(0, 0), font_size=24, fg_color=pygame.Color('white'), bg_color=pygame.Color('black'), ):
+    return text_image
+
+def create_button(string, surface, location=[0,0], font_size=24, fg_color=pygame.Color('white'), bg_color=pygame.Color('black'), center=False):
+    """
+    Pygame doesn't provide buttons. Button functionality can be 
+    accomplished by creating a surface, writing a string on it,
+    getting a rectangle representing the surface. The rectangle 
+    is necessary because in pygame they have an attribute that 
+    detects collision. The rectangles initial position is (0,0)
+    so it needs to be moved to the position of the string.
+    """
+    
+    if center:
+        text_width = get_width(string)
+        middle_of_screen = surface.get_width() / 2
+        location[0] = middle_of_screen - text_width / 2
+    # button hold the new rect created with the same dimensions as
+    # the string.
+    button = draw_string(string, surface, location=location).get_rect()
+    # The button is moved to the expected positions where clicks can
+    # be detected.
+    button.move_ip(location[0], location[1])
+    return button
+
+def input_string(prompt, surface, location=(0,0), font_size=24, fg_color=pygame.Color('white'), bg_color=pygame.Color('black'), ):
     # Draw a prompt string on the window surface. Check keys
     # pressed by the user until an enter key is pressed and
     # return the sequence of key presses as a str object
