@@ -26,9 +26,6 @@ def main():
             current_screen = beginning_screen
 
     beginning_screen.draw()
-    time.sleep(5)
-    # game = GameScreen(window)
-    # game.play()
 
     pygame.quit()
     
@@ -51,7 +48,7 @@ class's methods and attributes.
 class Screen(ABC):
 
     @abstractmethod
-    def run():
+    def run(self):
         pass
 
 class BeginningScreen(Screen):
@@ -61,20 +58,28 @@ class BeginningScreen(Screen):
 
     def draw(self):
         # Renders its contents into the surface.
+        middle_of_screen = self.surface.get_width() / 2
         title = "PONG"
-        uaio.draw_string(title, self.surface, location=(200, 200))
-        uaio.draw_string("Start Game", self.surface)
+        title_width = uaio.get_width(title)
+        title_x = middle_of_screen - title_width / 2
+        uaio.draw_string(title, self.surface, location=[title_x, 50])
+        self.start_game_button = uaio.create_button("Start Game", self.surface, location=[0,150], center=True)
         pygame.display.update()
 
-        return 0
-    def handleEvent(self):
-        option_selected = False
-        while not option_selected:
-            time.sleep(1)
+    def handleEvents(self):
+        event = pygame.event.poll()
+        if event.type == pygame.MOUSEBUTTONUP:
+            mouse_pos = pygame.mouse.get_pos()
+            if self.start_game_button.collidepoint(mouse_pos):
+                return "start"
+        return None
 
     def run(self):
+        print("Beginning screen running.")
         self.draw()
-        choice = self.handleEvent()
+        choice = None
+        while choice is None:
+            choice = self.handleEvents()
         return choice
 
 class EndingScreen(Screen):
