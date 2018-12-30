@@ -25,8 +25,6 @@ def main():
         elif current_screen == ending_screen:
             current_screen = beginning_screen
 
-    beginning_screen.draw()
-
     pygame.quit()
     
 def create_window():
@@ -58,12 +56,8 @@ class BeginningScreen(Screen):
 
     def draw(self):
         # Renders its contents into the surface.
-        middle_of_screen = self.surface.get_width() / 2
-        title = "PONG"
-        title_width = uaio.get_width(title)
-        title_x = middle_of_screen - title_width / 2
-        uaio.draw_string(title, self.surface, location=[title_x, 50])
-        self.start_game_button = uaio.create_button("Start Game", self.surface, location=[0,150], center=True)
+        uaio.draw_string("PONG", self.surface, location=(0, 50), center=True)
+        self.start_game_button = uaio.create_button("Start Game", self.surface, location=(0,150), center=True)
         pygame.display.update()
 
     def handleEvents(self):
@@ -71,7 +65,7 @@ class BeginningScreen(Screen):
         if event.type == pygame.MOUSEBUTTONUP:
             mouse_pos = pygame.mouse.get_pos()
             if self.start_game_button.collidepoint(mouse_pos):
-                return "start"
+                return "game"
         return None
 
     def run(self):
@@ -87,11 +81,26 @@ class EndingScreen(Screen):
     def __init__(self, surface):
         self.surface = surface
 
+    def draw(self):
+        uaio.draw_string("GAME OVER", self.surface, location=(0,100), center=True)
+        self.play_again_btn = uaio.create_button("Play Again", self.surface, location=(0,150), center=True)
+        self.main_screen_btn = uaio.create_button("Main Screen", self.surface, location=(0,200), center=True)
+
+
+    def handleEvents(self):
+        event = pygame.event.poll()
+        if event.type == pygame.MOUSEBUTTONUP:
+            mouse_pos = pygame.mouse.get_pos()
+            if self.main_screen_btn.collidepoint(mouse_pos):
+                return "beginning screen"
+        return None
+
     def run(self):
-        pass
-
-        
-
+        self.draw()
+        choice = None
+        while choice is None:
+            choice = self.handleEvents()
+        return choice
 
 class GameScreen(Screen):
     def __init__(self, surface):
