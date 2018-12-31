@@ -4,26 +4,24 @@ from abc import ABC, abstractmethod
 def main():
     window = create_window()
     
-    beginning_screen = BeginningScreen(window)
+    menu_screen = MenuScreen(window)
     game_screen = GameScreen(window)
-    ending_screen = EndingScreen(window)
+    game_over_screen = GameOverScreen(window)
 
-    current_screen = beginning_screen
+    screens = [menu_screen, game_screen, game_over_screen]
 
+    current_screen = menu_screen
     exit_program = False
 
     while not exit_program:
         # This assigns a the new screen when the old
         # one finished running.
-        current_screen.run()
-
-        # Choose the next screen.
-        if current_screen == beginning_screen:
-            current_screen = game_screen
-        elif current_screen == game_screen:
-            current_screen = ending_screen
-        elif current_screen == ending_screen:
-            current_screen = beginning_screen
+        next_screen_name = current_screen.run()
+        if next_screen_name == 'quit':
+            exit_program = True
+        for screen in screens:
+            if screen.name == next_screen_name:
+                current_screen = screen
 
     pygame.quit()
     
@@ -49,15 +47,21 @@ class Screen(ABC):
     def run(self):
         pass
 
-class BeginningScreen(Screen):
+class MenuScreen(Screen):
 
     def __init__(self, surface):
+        self.name = 'menu'
         self.surface = surface
 
     def draw(self):
         # Renders its contents into the surface.
         uaio.draw_string("PONG", self.surface, location=(0, 50), center=True)
-        self.start_game_button = uaio.create_button("Start Game", self.surface, location=(0,150), center=True)
+        self.start_game_button = uaio.create_button(
+            "Start Game",
+            self.surface,
+            location=(0,150),
+            center=True
+        )
         pygame.display.update()
 
     def handleEvents(self):
@@ -66,7 +70,6 @@ class BeginningScreen(Screen):
             mouse_pos = pygame.mouse.get_pos()
             if self.start_game_button.collidepoint(mouse_pos):
                 return "game"
-        return None
 
     def run(self):
         print("Beginning screen running.")
@@ -76,24 +79,35 @@ class BeginningScreen(Screen):
             choice = self.handleEvents()
         return choice
 
-class EndingScreen(Screen):
+class GameOverScreen(Screen):
     
     def __init__(self, surface):
+        self.name = 'game over'
         self.surface = surface
 
     def draw(self):
         uaio.draw_string("GAME OVER", self.surface, location=(0,100), center=True)
-        self.play_again_btn = uaio.create_button("Play Again", self.surface, location=(0,150), center=True)
-        self.main_screen_btn = uaio.create_button("Main Screen", self.surface, location=(0,200), center=True)
-
+        self.play_again_btn = uaio.create_button(
+            "Play Again",
+            self.surface,
+            location=(0,150),
+            center=True
+        )
+        self.main_screen_btn = uaio.create_button(
+            "Main Screen",
+            self.surface,
+            location=(0,200),
+            center=True
+        )
 
     def handleEvents(self):
         event = pygame.event.poll()
         if event.type == pygame.MOUSEBUTTONUP:
             mouse_pos = pygame.mouse.get_pos()
+            if self.play_again_btn.collidepoint(mouse_pos):
+                return  "game"
             if self.main_screen_btn.collidepoint(mouse_pos):
-                return "beginning screen"
-        return None
+                return "menu"
 
     def run(self):
         self.draw()
@@ -104,6 +118,7 @@ class EndingScreen(Screen):
 
 class GameScreen(Screen):
     def __init__(self, surface):
+        self.name = 'game'
         self.surface = surface
         self.surface_size = surface.get_size()
         self.bg_color = pygame.Color('black')
@@ -111,6 +126,7 @@ class GameScreen(Screen):
         self.ball = Ball([int(self.surface_size[0]/2), int(self.surface_size[1]/2)], 10, [1,1], self.fg_color, surface)
         self.left_player = pygame.Rect(30,200, 15, 100)
         self.right_player = pygame.Rect(self.surface_size[0] - 45, 200, 15, 100)
+        self.score = [0,0]
         self.close_clicked = False
         pygame.key.set_repeat(20, 20)
         
