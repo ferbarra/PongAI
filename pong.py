@@ -66,6 +66,8 @@ class MenuScreen(Screen):
 
     def handleEvents(self):
         event = pygame.event.poll()
+        if event.type == pygame.QUIT:
+            return 'quit'
         if event.type == pygame.MOUSEBUTTONUP:
             mouse_pos = pygame.mouse.get_pos()
             if self.start_game_button.collidepoint(mouse_pos):
