@@ -102,10 +102,12 @@ class GameOverScreen(Screen):
 
     def handleEvents(self):
         event = pygame.event.poll()
+        if event.type == pygame.QUIT:
+            return "quit"
         if event.type == pygame.MOUSEBUTTONUP:
             mouse_pos = pygame.mouse.get_pos()
             if self.play_again_btn.collidepoint(mouse_pos):
-                return  "game"
+                return "game"
             if self.main_screen_btn.collidepoint(mouse_pos):
                 return "menu"
 
