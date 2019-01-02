@@ -5,10 +5,10 @@ def main():
     window = create_window()
     
     menu_screen = MenuScreen(window)
-    game_screen = GameScreen(window)
+    p2p_screen = P2PScreen(window)
     game_over_screen = GameOverScreen(window)
 
-    screens = [menu_screen, game_screen, game_over_screen]
+    screens = [menu_screen, p2p_screen, game_over_screen]
 
     current_screen = menu_screen
     exit_program = False
@@ -71,15 +71,15 @@ class MenuScreen(Screen):
         if event.type == pygame.MOUSEBUTTONUP:
             mouse_pos = pygame.mouse.get_pos()
             if self.start_game_button.collidepoint(mouse_pos):
-                return "game"
+                return "p2p"
 
     def run(self):
         print("Beginning screen running.")
         self.draw()
-        choice = None
-        while choice is None:
-            choice = self.handleEvents()
-        return choice
+        next_screen = None
+        while next_screen is None:
+            next_screen = self.handleEvents()
+        return next_screen
 
 class GameOverScreen(Screen):
     
@@ -115,20 +115,20 @@ class GameOverScreen(Screen):
 
     def run(self):
         self.draw()
-        choice = None
-        while choice is None:
-            choice = self.handleEvents()
-        return choice
+        next_screen = None
+        while next_screen is None:
+            next_screen = self.handleEvents()
+        return next_screen
 
-class GameScreen(Screen):
+class P2PScreen(Screen):
     def __init__(self, surface):
-        self.name = 'game'
+        self.name = 'p2p'
         self.surface = surface
         self.surface_size = surface.get_size()
         self.bg_color = pygame.Color('black')
         self.fg_color = pygame.Color('white')
         self.ball = Ball([int(self.surface_size[0]/2), int(self.surface_size[1]/2)], 10, [1,1], self.fg_color, surface)
-        self.left_player = pygame.Rect(30,200, 15, 100)
+        self.left_player = pygame.Rect(30, 200, 15, 100)
         self.right_player = pygame.Rect(self.surface_size[0] - 45, 200, 15, 100)
         self.score = [0,0]
         self.close_clicked = False
@@ -136,28 +136,42 @@ class GameScreen(Screen):
         
     def run(self):
         self.draw()
-        while not self.close_clicked:
-            self.handle_event()
+        next_screen = None
+        while next_screen is None:
+            next_screen = self.handle_event()
             # wait some time so game doesn't go insanely fast
             time.sleep(0.00005)
-            self.update()
+            next_screen = self.update()
+            if self.isGameOver():
+                next_screen = 'game over'
             self.draw()
+        return next_screen
     
     def handle_event(self):
         event = pygame.event.poll()
         if event.type == pygame.QUIT:
-            self.close_clicked = True
+            return 'quit'
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_q:
+            keys_pressed = pygame.key.get_pressed()
+            if keys_pressed[pygame.K_q]:
                 self.move_player(self.left_player, -10)
-            if event.key == pygame.K_a:
+            if keys_pressed[pygame.K_a]:
                 self.move_player(self.left_player, 10)
-            if event.key == pygame.K_p:
+            if keys_pressed[pygame.K_p]:
                 self.move_player(self.right_player, -10)
-            if event.key == pygame.K_l:
+            if keys_pressed[pygame.K_l]:
                 self.move_player(self.right_player, 10)
-                
-                
+
+        # if event.type == pygame.KEYDOWN:
+        #     if event.key == pygame.K_q:
+        #         self.move_player(self.left_player, -10)
+        #     if event.key == pygame.K_a:
+        #         self.move_player(self.left_player, 10)
+        #     if event.key == pygame.K_p:
+        #         self.move_player(self.right_player, -10)
+        #     if event.key == pygame.K_l:
+        #         self.move_player(self.right_player, 10)
+                           
     def move_player(self, player, scalar):
         if (scalar < 0 and player.top >= scalar):
             player.move_ip(0,scalar)
@@ -180,9 +194,20 @@ class GameScreen(Screen):
         self.ball.draw()
         pygame.draw.rect(self.surface, self.fg_color, self.left_player)
         pygame.draw.rect(self.surface, self.fg_color, self.right_player)
-        pygame.display.update()    
-        
+        pygame.display.update()
 
+    def isGameOver(self):
+        left_player_score = self.score[0]
+        right_player_score = self.score[1]
+
+        if left_player_score == 10:
+
+            return True
+        if right_player_score == 10:
+            return True
+
+        return False
+        
 class Ball:
     def __init__(self, center, radius, speed, color, surface):
         self.center = center
